@@ -50,37 +50,43 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
-          height: 100,
-          child: !_hybrid
-              ? AndroidView(
-                  hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-                  viewType: viewType,
-                  creationParamsCodec: const StandardMessageCodec(),
-                  onPlatformViewCreated: (viewId) {},
-                )
-              : PlatformViewLink(
-                  viewType: viewType,
-                  surfaceFactory: (context, controller) => AndroidViewSurface(
-                    controller: controller
-                        // ignore: avoid_as
-                        as AndroidViewController, // TODO get rid of casting?
-                    gestureRecognizers: const <
-                        Factory<OneSequenceGestureRecognizer>>{},
-                    hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-                  ),
-                  onCreatePlatformView: (params) {
-                    return PlatformViewsService.initSurfaceAndroidView(
-                      id: params.id,
+        child: Column(
+          children: [
+            //TextField(),
+            Container(
+              height: 100,
+              child: !_hybrid
+                  ? AndroidView(
+                      hitTestBehavior: PlatformViewHitTestBehavior.opaque,
                       viewType: viewType,
-                      layoutDirection: TextDirection.ltr,
                       creationParamsCodec: const StandardMessageCodec(),
+                      onPlatformViewCreated: (viewId) {},
                     )
-                      ..addOnPlatformViewCreatedListener(
-                          params.onPlatformViewCreated)
-                      ..create();
-                  },
-                ),
+                  : PlatformViewLink(
+                      viewType: viewType,
+                      surfaceFactory: (context, controller) =>
+                          AndroidViewSurface(
+                        controller: controller
+                            // ignore: avoid_as
+                            as AndroidViewController, // TODO get rid of casting?
+                        gestureRecognizers: const <
+                            Factory<OneSequenceGestureRecognizer>>{},
+                        hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+                      ),
+                      onCreatePlatformView: (params) {
+                        return PlatformViewsService.initSurfaceAndroidView(
+                          id: params.id,
+                          viewType: viewType,
+                          layoutDirection: TextDirection.ltr,
+                          creationParamsCodec: const StandardMessageCodec(),
+                        )
+                          ..addOnPlatformViewCreatedListener(
+                              params.onPlatformViewCreated)
+                          ..create();
+                      },
+                    ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
