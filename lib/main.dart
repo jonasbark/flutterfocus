@@ -33,13 +33,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   MethodChannel methodChannel;
-
-  bool _hybrid = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final controller = TextEditingController();
+  final focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -52,48 +47,42 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           children: [
-            //TextField(),
+            TextField(
+              controller: controller,
+              focusNode: focusNode,
+            ),
             Container(
               height: 100,
-              child: !_hybrid
-                  ? AndroidView(
-                      hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-                      viewType: viewType,
-                      creationParamsCodec: const StandardMessageCodec(),
-                      onPlatformViewCreated: (viewId) {},
-                    )
-                  : PlatformViewLink(
-                      viewType: viewType,
-                      surfaceFactory: (context, controller) =>
-                          AndroidViewSurface(
-                        controller: controller
-                            // ignore: avoid_as
-                            as AndroidViewController, // TODO get rid of casting?
-                        gestureRecognizers: const <
-                            Factory<OneSequenceGestureRecognizer>>{},
-                        hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-                      ),
-                      onCreatePlatformView: (params) {
-                        return PlatformViewsService.initSurfaceAndroidView(
-                          id: params.id,
-                          viewType: viewType,
-                          layoutDirection: TextDirection.ltr,
-                          creationParamsCodec: const StandardMessageCodec(),
-                        )
-                          ..addOnPlatformViewCreatedListener(
-                              params.onPlatformViewCreated)
-                          ..create();
-                      },
-                    ),
+              child: PlatformViewLink(
+                viewType: viewType,
+                surfaceFactory: (context, controller) => AndroidViewSurface(
+                  controller: controller
+                      // ignore: avoid_as
+                      as AndroidViewController, // TODO get rid of casting?
+                  gestureRecognizers: const <
+                      Factory<OneSequenceGestureRecognizer>>{},
+                  hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+                ),
+                onCreatePlatformView: (params) {
+                  return PlatformViewsService.initSurfaceAndroidView(
+                    id: params.id,
+                    viewType: viewType,
+                    layoutDirection: TextDirection.ltr,
+                    creationParamsCodec: const StandardMessageCodec(),
+                  )
+                    ..addOnPlatformViewCreatedListener(
+                        params.onPlatformViewCreated)
+                    ..create();
+                },
+              ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            _hybrid = !_hybrid;
-          });
+          focusNode.unfocus();
+          //Navigator.of(context).push(MaterialPageRoute(builder: (c) => Scaffold(body: TextField())));
         },
       ),
     );
