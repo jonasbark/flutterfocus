@@ -59,8 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: controller
                       // ignore: avoid_as
                       as AndroidViewController, // TODO get rid of casting?
-                  gestureRecognizers: const <
-                      Factory<OneSequenceGestureRecognizer>>{},
+                  gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
                   hitTestBehavior: PlatformViewHitTestBehavior.opaque,
                 ),
                 onCreatePlatformView: (params) {
@@ -69,9 +68,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     viewType: viewType,
                     layoutDirection: TextDirection.ltr,
                     creationParamsCodec: const StandardMessageCodec(),
+                    onFocus: () {
+                      params.onFocusChanged(true);
+                    },
                   )
-                    ..addOnPlatformViewCreatedListener(
-                        params.onPlatformViewCreated)
+                    ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
                     ..create();
                 },
               ),
